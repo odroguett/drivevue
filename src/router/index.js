@@ -2,10 +2,6 @@ import { createRouter, createWebHistory } from "vue-router";
 import loginRouter from "./login";
 import home from "../views/home.vue";
 
-//import login from "../components/login.vue";
-
-//import HomeView from '../views/HomeView.vue'
-
 const routes = [
   ...loginRouter,
   {
@@ -17,7 +13,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

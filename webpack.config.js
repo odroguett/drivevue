@@ -64,11 +64,14 @@ module.exports = {
     new VueLoaderPlugin(),
   ],
   devServer: {
-    static: {
-      directory: path.join(__dirname, "public"),
-    },
-    compress: true,
+    historyApiFallback: true,
     port: 9000,
+    open: {
+      app: {
+        name: "chrome",
+        arguments: ["--incognito", "--new-window"],
+      },
+    },
   },
   devtool: "inline-source-map",
   optimization: {
