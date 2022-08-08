@@ -88,28 +88,33 @@ export default {
       password: "",
     });
     const autentificar = () => {
-      axios.post("/usuarios/login", objetoUsuario)
+      axios
+        .post("/usuarios/login", objetoUsuario)
         .then((response) => {
-
           if (response && response.data) {
             localStorage.setItem("isAuthenticated", "true");
             localStorage.setItem("auth_token", response.data.token);
             // localStorage.setItem('auth_usuario', response.data.usuario);
             router.push("/");
           } else {
-           
+            if (response.status === "401") {
+              alert("Usuario no encontrado");
+            }
           }
         })
         .catch((error) => {
+          if(error.response !== undefined && error.response.status ==="400")
+          {
+            alert("Error al autentificar usuario");
+
+          }
         });
-    }
+    };
     return {
       objetoUsuario,
       autentificar,
     };
   },
 };
-
 </script>
-<style>
-</style>
+<style></style>
