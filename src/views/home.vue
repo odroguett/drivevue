@@ -1,9 +1,7 @@
 <template>
-  <v-container>
-    <v-layout>
-      <v-btn color="primary"> hola</v-btn>
-    </v-layout>
-  </v-container>
+  <div>
+    <h1>Home mi casa</h1>
+  </div>
 </template>
 
 <script>

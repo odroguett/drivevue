@@ -1,10 +1,10 @@
 import axios from "axios";
-import constantes from "../variablesEntorno/constantes.js";
+import constantes from "../variablesEntorno/env";
 
 const jwtInterceptor = axios.create({});
 
 console.log(constantes.baseURL);
-jwtInterceptor.defaults.baseURL = "http://localhost:3000/api";
+jwtInterceptor.defaults.baseURL = constantes.baseURL;
 jwtInterceptor.interceptors.request.use(
   (request) => {
     const auth_token = localStorage.getItem("auth_token");
