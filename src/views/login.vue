@@ -103,10 +103,8 @@ export default {
           }
         })
         .catch((error) => {
-          if(error.response !== undefined && error.response.status ==="400")
-          {
+          if (error.response !== undefined && error.response.status === "400") {
             alert("Error al autentificar usuario");
-
           }
         });
     };

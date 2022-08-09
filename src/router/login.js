@@ -1,4 +1,4 @@
-import login from "../components/login.vue";
+import login from "../views/login.vue";
 
 const routes = [
   {
