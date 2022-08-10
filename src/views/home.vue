@@ -23,17 +23,19 @@
               style="--bs-scroll-height: 100px"
             >
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <router-link to="/usuarios">
+                  <button class="btn btn-light">Usuarios</button>
+                </router-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"
-                  >Usuarios</a
-                >
+                <router-link to="/instituciones">
+                  <button class="btn btn-light">Compañias</button>
+                </router-link>
               </li>
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"
-                  >Compañias</a
-                >
+               <li class="nav-item">
+                 <router-link to="/perfiles">
+                  <button class="btn btn-light">Perfiles</button>
+                </router-link>
               </li>
             </ul>
 
@@ -123,7 +125,6 @@
                 Salir
               </button>
             </div>
-           
           </div>
         </div>
 
