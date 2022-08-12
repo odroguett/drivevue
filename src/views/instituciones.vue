@@ -54,7 +54,7 @@
           <div class="row">
             <div v-for="(value, key) in instituciones" class="col-sm-3">
               <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">Compania Seguro</div>
+                <div class="card-header">Compania Seguro <button class="btn" style="margin-left: 20px;">X</button> </div>
                 <div class="card-body text-primary">
                   <h6 class="card-title">{{ value.descripcion }}</h6>
                   <p class="card-text">Rut: {{ value.RUT }}</p>
@@ -66,7 +66,7 @@
                       tipoProceso('M', value._id, value.descripcion, value.RUT)
                     "
                     class="btn btn-primary"
-                    >Acción</a
+                    >Modificar</a
                   >
                 </div>
               </div>
