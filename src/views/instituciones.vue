@@ -38,6 +38,7 @@
                       class="btn btn-outline-secondary"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
+                      @click="tipoProceso('A', '', '', '')"
                     >
                       Agregar
                     </button>
@@ -47,52 +48,26 @@
             </div>
           </nav>
         </div>
+        <hr />
 
         <div class="container">
-          <hr />
           <div class="row">
-            <div class="col-sm-3">
+            <div v-for="(value, key) in instituciones" class="col-sm-3">
               <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">BICE</div>
+                <div class="card-header">Compania Seguro</div>
                 <div class="card-body text-primary">
-                  <h5 class="card-title">Bice Seguro S.A.</h5>
-                  <p class="card-text">Rut: 88.789.458-7</p>
-                        <a href="#" class="btn btn-primary">Acción</a>
-                        
-                 
-                   
-                  
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">Consorcio</div>
-                <div class="card-body text-primary">
-                  <h5 class="card-title">Consorcio Nacional</h5>
-                  <p class="card-text">Rut: 88.789.458-7</p>
-                  <a href="#" class="btn btn-primary">Acción</a>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">MetLife</div>
-                <div class="card-body text-primary">
-                  <h5 class="card-title">MetLife Seguros</h5>
-                  <p class="card-text">Rut: 88.789.458-7</p>
-                   <a href="#" class="btn btn-primary">Acción</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-3">
-              <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">Ohio</div>
-                <div class="card-body text-primary">
-                  <h5 class="card-title">Ohio National</h5>
-                  <p class="card-text">Rut: 88.789.458-7</p>
-                   <a href="#" class="btn btn-primary">Acción</a>
+                  <h6 class="card-title">{{ value.descripcion }}</h6>
+                  <p class="card-text">Rut: {{ value.RUT }}</p>
+                  <a
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modificarModal"
+                    @click="
+                      tipoProceso('M', value._id, value.descripcion, value.RUT)
+                    "
+                    class="btn btn-primary"
+                    >Acción</a
+                  >
                 </div>
               </div>
             </div>
@@ -123,37 +98,88 @@
         <div class="modal-body">
           <div class="form-group">
             <input
-              type="text"
               class="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Nombre"
+              placeholder="Codigo"
+              v-model="institucion.id"
             />
             <br />
           </div>
           <div class="form-group">
             <input
-              type="text"
               class="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
               placeholder="Descripcion"
+              v-model="institucion.descripcion"
             />
             <br />
           </div>
           <div class="form-group">
             <input
-              type="text"
               class="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Rut"
+              placeholder="RUT"
+              v-model="institucion.RUT"
             />
             <br />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Aceptar</button>
+          <button
+            type="button"
+            @click="agregarInstitucion()"
+            class="btn btn-primary"
+          >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
+    id="modificarModal"
+    tabindex="-1"
+    aria-labelledby="modificarModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modificarModal">Modificar Compañia</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input
+              class="form-control"
+              placeholder="Codigo"
+              v-model="institucion.id"
+              disabled="true"
+            />
+            <br />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              placeholder="Descripcion"
+              v-model="institucion.descripcion"
+            />
+            <br />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              placeholder="RUT"
+              v-model="institucion.RUT"
+            />
+            <br />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" @click="actualizarInstitucion()"  class="btn btn-primary">Aceptar</button>
         </div>
       </div>
     </div>
@@ -162,23 +188,31 @@
 
 <script>
 import interceptor from "../compartido/jwt.interceptor";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 export default {
   name: "Instituciones",
   components: {},
   setup: () => {
-    let instituciones = reactive({
-      nombre: String,
-      descripcion: String,
-      rut: String,
+    let instituciones = reactive([]);
+    let institucion = reactive({
+      id: "",
+      descripcion: "",
+      RUT: "",
     });
+    let habilitaControl = ref(null);
+
     const obtenerListaInstituciones = () => {
       interceptor
         .get("/instituciones/obtenerListaInstituciones")
         .then((response) => {
           if (response && response.data) {
-            console.log("exito");
+            response = response.data.objeto;
+            response.forEach((element) => {
+              instituciones.push(element);
+            });
+
+            console.log(instituciones);
           } else {
             if (response.status === "401") {
               alert("Error al obtener instituciones");
@@ -187,16 +221,78 @@ export default {
         })
         .catch((error) => {
           if (error.response !== undefined && error.response.status === "400") {
-            alert("Error al obtener institucuines");
+            alert("Error al obtener instituciones");
           }
         });
     };
+    const agregarInstitucion = () => {
+      habilitaControl.value = false;
+      interceptor
+        .post("/instituciones/crearInstitucion", institucion)
+        .then((response) => {
+          if (response && response.data) {
+            obtenerListaInstituciones();
+            console.log(instituciones);
+          } else {
+            if (response.status === "401") {
+              alert("Error al obtener instituciones");
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response !== undefined && error.response.status === "400") {
+            alert("Error al obtener instituciones");
+          }
+        });
+    };
+
+    const tipoProceso = (tipoProceso, id, descripcion, RUT) => {
+      if (tipoProceso === "M") {
+        institucion.id = id;
+        institucion.descripcion = descripcion;
+        institucion.RUT = RUT;
+      } else {
+        institucion.id = "";
+        institucion.descripcion = "";
+        institucion.RUT = "";
+      }
+    };
+
+    const actualizarInstitucion = () => {
+      habilitaControl.value = false;
+      interceptor
+        .patch(
+          "/instituciones/actualizarInstitucion?id=" + institucion.id,
+          institucion
+        )
+        .then((response) => {
+          if (response && response.data) {
+            obtenerListaInstituciones();
+            console.log(instituciones);
+          } else {
+            if (response.status === "401") {
+              alert("Error al obtener instituciones");
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response !== undefined && error.response.status === "400") {
+            alert("Error al obtener instituciones");
+          }
+        });
+    };
+
     onMounted(() => {
       obtenerListaInstituciones();
     });
 
     return {
       instituciones,
+      institucion,
+      agregarInstitucion,
+      tipoProceso,
+      habilitaControl,
+      actualizarInstitucion
     };
   },
 };

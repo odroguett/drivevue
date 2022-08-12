@@ -3,14 +3,15 @@ import constantes from "../variablesEntorno/env";
 
 const jwtInterceptor = axios.create({});
 
-console.log(constantes.baseURL);
 jwtInterceptor.defaults.baseURL = constantes.baseURL;
 jwtInterceptor.interceptors.request.use(
   (request) => {
     const auth_token = localStorage.getItem("auth_token");
     const auth_usuario = localStorage.getItem("auth_usuario");
+    console.log(auth_token);
+
     if (auth_token) {
-      request.headers.Autorization = `Bearer ${auth_token}`;
+      request.headers.authorization = `Bearer ${auth_token}`;
     }
     if (auth_usuario) {
       request.headers["auth_usuario"] = `${auth_usuario}`;
@@ -33,7 +34,7 @@ jwtInterceptor.interceptors.response.use(
         reject(error);
       });
     }
-    if (error.response.status === 400) {
+    if (error.response.status === 403) {
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("auth_usuario");
       window.location.href = "/Login";
