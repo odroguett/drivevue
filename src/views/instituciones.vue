@@ -38,7 +38,7 @@
                       class="btn btn-outline-secondary"
                       data-bs-toggle="modal"
                       data-bs-target="#exampleModal"
-                      @click="tipoProceso('A', '', '', '')"
+                      @click="instituciones.tipoProceso('A', '', '', '')"
                     >
                       Agregar
                     </button>
@@ -52,11 +52,20 @@
 
         <div class="container">
           <div class="row">
-            <div v-for="(value, key) in instituciones" class="col-sm-3">
+            <div
+              v-for="(value, key) in instituciones.instituciones"
+              class="col-sm-3"
+            >
               <div class="card border-primary mb-3" style="max-width: 18rem">
                 <div class="card-header">
                   Compania Seguro
-                  <button @click="eliminarInstitucion(value._id)"   class="btn" style="margin-left: 20px">X</button>
+                  <button
+                    @click="instituciones.eliminarInstitucion(value._id)"
+                    class="btn"
+                    style="margin-left: 20px"
+                  >
+                    X
+                  </button>
                 </div>
                 <div class="card-body text-primary">
                   <h6 class="card-title">{{ value.descripcion }}</h6>
@@ -66,7 +75,12 @@
                     data-bs-toggle="modal"
                     data-bs-target="#modificarModal"
                     @click="
-                      tipoProceso('M', value._id, value.descripcion, value.RUT)
+                      instituciones.tipoProceso(
+                        'M',
+                        value._id,
+                        value.descripcion,
+                        value.RUT
+                      )
                     "
                     class="btn btn-primary"
                     >Modificar</a
@@ -103,7 +117,7 @@
             <input
               class="form-control"
               placeholder="Codigo"
-              v-model="institucion.id"
+              v-model="instituciones.institucion.id"
             />
             <br />
           </div>
@@ -111,7 +125,7 @@
             <input
               class="form-control"
               placeholder="Descripcion"
-              v-model="institucion.descripcion"
+              v-model="instituciones.institucion.descripcion"
             />
             <br />
           </div>
@@ -119,7 +133,7 @@
             <input
               class="form-control"
               placeholder="RUT"
-              v-model="institucion.RUT"
+              v-model="instituciones.institucion.RUT"
             />
             <br />
           </div>
@@ -127,7 +141,7 @@
         <div class="modal-footer">
           <button
             type="button"
-            @click="agregarInstitucion()"
+            @click="instituciones.agregarInstitucion()"
             class="btn btn-primary"
           >
             Aceptar
@@ -159,7 +173,7 @@
             <input
               class="form-control"
               placeholder="Codigo"
-              v-model="institucion.id"
+              v-model="instituciones.institucion.id"
               disabled="true"
             />
             <br />
@@ -168,7 +182,7 @@
             <input
               class="form-control"
               placeholder="Descripcion"
-              v-model="institucion.descripcion"
+              v-model="instituciones.institucion.descripcion"
             />
             <br />
           </div>
@@ -176,13 +190,19 @@
             <input
               class="form-control"
               placeholder="RUT"
-              v-model="institucion.RUT"
+              v-model="instituciones.institucion.RUT"
             />
             <br />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" @click="actualizarInstitucion()"  class="btn btn-primary">Aceptar</button>
+          <button
+            type="button"
+            @click="instituciones.actualizarInstitucion()"
+            class="btn btn-primary"
+          >
+            Aceptar
+          </button>
         </div>
       </div>
     </div>
@@ -190,144 +210,20 @@
 </template>
 
 <script>
-import interceptor from "../compartido/jwt.interceptor";
-import { onMounted, reactive, ref } from "vue";
+import { oInstituciones } from "../clases/Instituciones.js";
+import { onMounted, reactive } from "vue";
 
 export default {
   name: "Instituciones",
   components: {},
   setup: () => {
-    let instituciones = reactive([]);
-    let institucion = reactive({
-      id: "",
-      descripcion: "",
-      RUT: "",
-    });
-    let habilitaControl = ref(null);
-
-    const obtenerListaInstituciones = () => {
-      interceptor
-        .get("/instituciones/obtenerListaInstituciones")
-        .then((response) => {
-          if (response && response.data) {
-            response = response.data.objeto;
-            response.forEach((element) => {
-              instituciones.push(element);
-            });
-
-            console.log(instituciones);
-          } else {
-            if (response.status === "401") {
-              alert("Error al obtener instituciones");
-            }
-          }
-        })
-        .catch((error) => {
-          if (error.response !== undefined && error.response.status === "400") {
-            alert("Error al obtener instituciones");
-          }
-        });
-    };
-    const agregarInstitucion = () => {
-      habilitaControl.value = false;
-      interceptor
-        .post("/instituciones/crearInstitucion", institucion)
-        .then((response) => {
-          if (response && response.data) {
-            limpiarInstituciones();
-            obtenerListaInstituciones();
-            console.log(instituciones);
-          } else {
-            if (response.status === "401") {
-              alert("Error al obtener instituciones");
-            }
-          }
-        })
-        .catch((error) => {
-          if (error.response !== undefined && error.response.status === "400") {
-            alert("Error al obtener instituciones");
-          }
-        });
-    };
-
-    const tipoProceso = (tipoProceso, id, descripcion, RUT) => {
-      if (tipoProceso === "M") {
-        institucion.id = id;
-        institucion.descripcion = descripcion;
-        institucion.RUT = RUT;
-      } else {
-        institucion.id = "";
-        institucion.descripcion = "";
-        institucion.RUT = "";
-      }
-    };
-
-    const actualizarInstitucion = () => {
-      interceptor
-        .patch(
-          "/instituciones/actualizarInstitucion?id=" + institucion.id,
-          institucion
-        )
-        .then((response) => {
-          if (response && response.data) {
-            limpiarInstituciones();
-            obtenerListaInstituciones();
-            console.log(instituciones);
-          } else {
-            if (response.status === "401") {
-              alert("Error al obtener instituciones");
-            }
-          }
-        })
-        .catch((error) => {
-          if (error.response !== undefined && error.response.status === "400") {
-            alert("Error al obtener instituciones");
-          }
-        });
-    };
-
-     const eliminarInstitucion = (id) => {
-      debugger;
-       institucion.id = id;
-      interceptor
-        .delete("/instituciones/eliminarInstitucion?id=" + institucion.id)
-        .then((response) => {
-          if (response && response.data) {
-            limpiarInstituciones();
-            obtenerListaInstituciones();
-            console.log(instituciones);
-          } else {
-            if (response.status === "401") {
-              alert("Error al obtener instituciones");
-            }
-          }
-        })
-        .catch((error) => {
-          if (error.response !== undefined && error.response.status === "400") {
-            alert("Error al obtener instituciones");
-          }
-        });
-    };
-    const limpiarInstituciones =() => {
-
-      for (let index = 0; index < instituciones.length; index++) {
-        instituciones.splice(index);
-      }
-    }
-    
-
+    let instituciones = reactive(new oInstituciones.Instituciones());
     onMounted(() => {
-      obtenerListaInstituciones();
+      instituciones.obtenerListaInstituciones();
     });
 
     return {
       instituciones,
-      institucion,
-      agregarInstitucion,
-      tipoProceso,
-      habilitaControl,
-      actualizarInstitucion,
-      eliminarInstitucion
     };
   },
 };
