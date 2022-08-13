@@ -54,7 +54,10 @@
           <div class="row">
             <div v-for="(value, key) in instituciones" class="col-sm-3">
               <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">Compania Seguro <button class="btn" style="margin-left: 20px;">X</button> </div>
+                <div class="card-header">
+                  Compania Seguro
+                  <button @click="eliminarInstitucion(value._id)"   class="btn" style="margin-left: 20px">X</button>
+                </div>
                 <div class="card-body text-primary">
                   <h6 class="card-title">{{ value.descripcion }}</h6>
                   <p class="card-text">Rut: {{ value.RUT }}</p>
@@ -231,6 +234,7 @@ export default {
         .post("/instituciones/crearInstitucion", institucion)
         .then((response) => {
           if (response && response.data) {
+            limpiarInstituciones();
             obtenerListaInstituciones();
             console.log(instituciones);
           } else {
@@ -259,7 +263,6 @@ export default {
     };
 
     const actualizarInstitucion = () => {
-      habilitaControl.value = false;
       interceptor
         .patch(
           "/instituciones/actualizarInstitucion?id=" + institucion.id,
@@ -267,6 +270,7 @@ export default {
         )
         .then((response) => {
           if (response && response.data) {
+            limpiarInstituciones();
             obtenerListaInstituciones();
             console.log(instituciones);
           } else {
@@ -282,6 +286,36 @@ export default {
         });
     };
 
+     const eliminarInstitucion = (id) => {
+      debugger;
+       institucion.id = id;
+      interceptor
+        .delete("/instituciones/eliminarInstitucion?id=" + institucion.id)
+        .then((response) => {
+          if (response && response.data) {
+            limpiarInstituciones();
+            obtenerListaInstituciones();
+            console.log(instituciones);
+          } else {
+            if (response.status === "401") {
+              alert("Error al obtener instituciones");
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response !== undefined && error.response.status === "400") {
+            alert("Error al obtener instituciones");
+          }
+        });
+    };
+    const limpiarInstituciones =() => {
+
+      for (let index = 0; index < instituciones.length; index++) {
+        instituciones.splice(index);
+      }
+    }
+    
+
     onMounted(() => {
       obtenerListaInstituciones();
     });
@@ -292,7 +326,8 @@ export default {
       agregarInstitucion,
       tipoProceso,
       habilitaControl,
-      actualizarInstitucion
+      actualizarInstitucion,
+      eliminarInstitucion
     };
   },
 };
