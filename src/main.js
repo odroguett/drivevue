@@ -5,11 +5,13 @@ import store from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import VueAxios from "vue-axios";
+//import VueAlertify from 'vue-alertify';
 
 import variablesEntorno from "./variablesEntorno/env";
 
 const app = createApp(App);
 axios.defaults.baseURL = variablesEntorno.baseURL;
+//app.use(VueAlertify);
 app.use(VueAxios, axios);
 app.use(store);
 app.use(router);

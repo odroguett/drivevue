@@ -113,6 +113,13 @@
           ></button>
         </div>
         <div class="modal-body">
+          <input
+              class="form-control text-warning" style="border:0 ;"
+              disabled
+              placeholder=""
+              v-model="instituciones.mensajeError"
+            />
+            <br/>
           <div class="form-group">
             <input
               class="form-control"
@@ -212,6 +219,7 @@
 <script>
 import { oInstituciones } from "../clases/Instituciones.js";
 import { onMounted, reactive } from "vue";
+
 
 export default {
   name: "Instituciones",

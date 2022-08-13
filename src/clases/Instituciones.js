@@ -1,6 +1,10 @@
 import interceptor from "../compartido/jwt.interceptor";
 
+const funciones = require("../clases/funciones");
+
 class Instituciones {
+  oFunciones = new funciones();
+  mensajeError = "";
   instituciones = [];
   institucion = {
     id: "",
@@ -30,24 +34,31 @@ class Instituciones {
       });
   }
   agregarInstitucion() {
-    interceptor
-      .post("/instituciones/crearInstitucion", this.institucion)
-      .then((response) => {
-        if (response && response.data) {
-          this.limpiarInstituciones();
-          this.obtenerListaInstituciones();
-          console.log(this.instituciones);
-        } else {
-          if (response.status === "401") {
+    let mensaje = "";
+    this.mensajeError = "";
+    // eslint-disable-next-line prettier/prettier
+    mensaje = this.oFunciones.validaLargoCampo(6,3,this.institucion.id.length);
+    if (mensaje != "") {
+      this.mensajeError = mensaje;
+    } else {
+      interceptor
+        .post("/instituciones/crearInstitucion", this.institucion)
+        .then((response) => {
+          if (response && response.data) {
+            this.limpiarInstituciones();
+            this.obtenerListaInstituciones();
+          } else {
+            if (response.status === "401") {
+              alert("Error al obtener instituciones");
+            }
+          }
+        })
+        .catch((error) => {
+          if (error.response !== undefined && error.response.status === "400") {
             alert("Error al obtener instituciones");
           }
-        }
-      })
-      .catch((error) => {
-        if (error.response !== undefined && error.response.status === "400") {
-          alert("Error al obtener instituciones");
-        }
-      });
+        });
+    }
   }
 
   tipoProceso(tipoProceso, id, descripcion, RUT) {
