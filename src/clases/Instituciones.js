@@ -1,3 +1,4 @@
+
 import interceptor from "../compartido/jwt.interceptor";
 
 const funciones = require("../clases/funciones");
@@ -34,13 +35,11 @@ class Instituciones {
       });
   }
   agregarInstitucion() {
-    let mensaje = "";
     this.mensajeError = "";
-    // eslint-disable-next-line prettier/prettier
-    mensaje = this.oFunciones.validaLargoCampo(6,3,this.institucion.id.length);
-    if (mensaje != "") {
-      this.mensajeError = mensaje;
-    } else {
+    let bError = this.validaDatos();
+    console.log(bError);
+
+    if (bError == false) {
       interceptor
         .post("/instituciones/crearInstitucion", this.institucion)
         .then((response) => {
@@ -71,6 +70,7 @@ class Instituciones {
       this.institucion.descripcion = "";
       this.institucion.RUT = "";
     }
+    this.mensajeError = "";
   }
 
   actualizarInstitucion() {
@@ -122,6 +122,35 @@ class Instituciones {
     for (let index = 0; index < this.instituciones.length; index++) {
       this.instituciones.splice(index);
     }
+  }
+  validaDatos() {
+    let bError = false;
+    let mensaje = "";
+    debugger;
+    // eslint-disable-next-line prettier/prettier
+    mensaje = this.oFunciones.validaLargoMinimoCampo(3,this.institucion.id.length);
+    if (mensaje != "") {
+      bError = true;
+      this.mensajeError = mensaje;
+    }
+
+    mensaje = this.oFunciones.validaLargoMinimoCampo(
+      6,
+      this.institucion.descripcion.length
+    );
+    if (mensaje != "") {
+      bError = true;
+      this.mensajeError = mensaje;
+    }
+    mensaje = this.oFunciones.validaLargoMinimoCampo(
+      6,
+      this.institucion.RUT.length
+    );
+    if (mensaje != "") {
+      bError = true;
+      this.mensajeError = mensaje;
+    }
+    return bError;
   }
 }
 export const oInstituciones = {

@@ -1,14 +1,20 @@
 class funciones {
-  validaLargoCampo(largoMaximo, largoMinimo, totalCaracteres) {
+  validaLargoMaximoCampo(largoMaximo, totalCaracteres) {
     let mensaje = "";
-    if (largoMaximo > totalCaracteres) {
+    console.log(largoMaximo);
+    if (largoMaximo < totalCaracteres) {
       mensaje = "Tamaño de campo supera el maximo permitido";
-      return mensaje;
     }
-    if (largoMinimo < totalCaracteres) {
+    return mensaje;
+  }
+
+  validaLargoMinimoCampo(largoMinimo, totalCaracteres) {
+    let mensaje = "";
+    debugger;
+    if (largoMinimo > totalCaracteres) {
       mensaje = "Tamaño de campo menor que el aceptado";
-      return mensaje;
     }
+    return mensaje;
   }
 }
 module.exports = funciones;

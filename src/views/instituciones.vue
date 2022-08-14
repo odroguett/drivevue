@@ -218,7 +218,7 @@
 
 <script>
 import { oInstituciones } from "../clases/Instituciones.js";
-import { onMounted, reactive } from "vue";
+import { onMounted,onUpdated, reactive } from "vue";
 
 
 export default {
@@ -228,6 +228,9 @@ export default {
     let instituciones = reactive(new oInstituciones.Instituciones());
     onMounted(() => {
       instituciones.obtenerListaInstituciones();
+    });
+    onUpdated(() => {
+      console.log("Actualizacion");
     });
 
     return {
