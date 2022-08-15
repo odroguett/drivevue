@@ -48,12 +48,11 @@
             </div>
           </nav>
         </div>
-        <hr />
-
         <div class="container">
+            <hr />
           <div class="row">
             <div
-              v-for="(value, key) in instituciones.instituciones"
+              v-for="(value, key) in instituciones.listaInstituciones"
               class="col-sm-3"
             >
               <div class="card border-primary mb-3" style="max-width: 18rem">
@@ -114,10 +113,11 @@
         </div>
         <div class="modal-body">
           <input
-              class="form-control text-warning" style="border:0 ;"
-              disabled
-              placeholder=""
-              v-model="instituciones.mensajeError"
+            class="form-control text-warning"
+            style="border: 0"
+            disabled
+            placeholder=""
+            v-model="instituciones.mensajeError"
             />
             <br/>
           <div class="form-group">
@@ -218,8 +218,7 @@
 
 <script>
 import { oInstituciones } from "../clases/Instituciones.js";
-import { onMounted,onUpdated, reactive } from "vue";
-
+import { onMounted,reactive } from "vue";
 
 export default {
   name: "Instituciones",
@@ -229,10 +228,6 @@ export default {
     onMounted(() => {
       instituciones.obtenerListaInstituciones();
     });
-    onUpdated(() => {
-      console.log("Actualizacion");
-    });
-
     return {
       instituciones,
     };

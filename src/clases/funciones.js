@@ -10,7 +10,6 @@ class funciones {
 
   validaLargoMinimoCampo(largoMinimo, totalCaracteres) {
     let mensaje = "";
-    debugger;
     if (largoMinimo > totalCaracteres) {
       mensaje = "Tamaño de campo menor que el aceptado";
     }

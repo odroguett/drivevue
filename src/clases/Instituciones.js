@@ -1,4 +1,3 @@
-
 import interceptor from "../compartido/jwt.interceptor";
 
 const funciones = require("../clases/funciones");
@@ -6,7 +5,7 @@ const funciones = require("../clases/funciones");
 class Instituciones {
   oFunciones = new funciones();
   mensajeError = "";
-  instituciones = [];
+  listaInstituciones = [];
   institucion = {
     id: "",
     descripcion: "",
@@ -20,7 +19,7 @@ class Instituciones {
         if (response && response.data) {
           response = response.data.objeto;
           response.forEach((element) => {
-            this.instituciones.push(element);
+            this.listaInstituciones.push(element);
           });
         } else {
           if (response.status === "401") {
@@ -83,7 +82,6 @@ class Instituciones {
         if (response && response.data) {
           this.limpiarInstituciones();
           this.obtenerListaInstituciones();
-          console.log(this.instituciones);
         } else {
           if (response.status === "401") {
             alert("Error al obtener instituciones");
@@ -105,7 +103,6 @@ class Instituciones {
         if (response && response.data) {
           this.limpiarInstituciones();
           this.obtenerListaInstituciones();
-          console.log(this.instituciones);
         } else {
           if (response.status === "401") {
             alert("Error al obtener instituciones");
@@ -119,14 +116,13 @@ class Instituciones {
       });
   }
   limpiarInstituciones() {
-    for (let index = 0; index < this.instituciones.length; index++) {
-      this.instituciones.splice(index);
+    for (let index = 0; index < this.listaInstituciones.length; index++) {
+      this.listaInstituciones.splice(index);
     }
   }
   validaDatos() {
     let bError = false;
     let mensaje = "";
-    debugger;
     // eslint-disable-next-line prettier/prettier
     mensaje = this.oFunciones.validaLargoMinimoCampo(3,this.institucion.id.length);
     if (mensaje != "") {
