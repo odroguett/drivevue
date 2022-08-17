@@ -32,8 +32,8 @@
                   <button class="btn btn-light">Compañias</button>
                 </router-link>
               </li>
-               <li class="nav-item">
-                 <router-link to="/perfiles">
+              <li class="nav-item">
+                <router-link to="/perfiles">
                   <button class="btn btn-light">Perfiles</button>
                 </router-link>
               </li>
@@ -64,18 +64,21 @@
               role="tablist"
               aria-orientation="vertical"
             >
-              <button
-                class="nav-link active"
-                id="v-pills-home-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#v-pills-home"
-                type="button"
-                role="tab"
-                aria-controls="v-pills-home"
-                aria-selected="true"
-              >
-                Nuevo
-              </button>
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-primary dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Agregar
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#agregarCarpeta">Nueva Carpeta</a></li>
+                  <li><a class="dropdown-item" href="#">Subir Archivo</a></li>
+                  <li><a class="dropdown-item" href="#">Subir Carpeta</a></li>
+                </ul>
+              </div>
               <button
                 class="nav-link"
                 id="v-pills-profile-tab"
@@ -134,6 +137,36 @@
       </div>
     </div>
   </body>
+  <div
+    class="modal fade"
+    id="agregarCarpeta"
+    tabindex="-1"
+    aria-labelledby="agregarCarpeta"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="agregarModal">Carpeta</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input class="form-control" placeholder="Nombre Carpeta" />
+            <br />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

@@ -16,13 +16,12 @@
       </v-button>
     </div>
     <div class="row">
-      
-    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 labelBuscar">
-      <label>Buscar: <input class="form-control" v-model="searchTerm" /></label>
+      <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 labelBuscar">
+        <label
+          >Buscar: <input class="form-control" v-model="searchTerm"
+        /></label>
+      </div>
     </div>
-
-    </div>
-    
   </div>
   <br />
   <table-lite
@@ -41,12 +40,14 @@
 <script>
 import { defineComponent, reactive, ref, computed, watch } from "vue";
 import TableLite from "vue3-table-lite";
+import { oUsuarios } from "../clases/usuarios";
 
 export default defineComponent({
   name: "grillaUsuarios",
   components: { TableLite },
-  emits: ["emitBeneficiario"],
+  emits: ["emitUsuario"],
   setup(props, { emit }) {
+    let usuarios = reactive(new oUsuarios.Usuarios());
     const searchTerm = ref("");
     //Esta variable se utiliza para el buscar
     var valoresTabla;
@@ -136,7 +137,7 @@ export default defineComponent({
                     </button>
               <ul class="dropdown-menu" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -39px);">
               <li><a class="is-rows-el edit-btn  name-btn dropdown-item" data-id="` +
-              row._id +
+              row.usuario +
               `">Modificar</a></li>
               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
               row._id +
@@ -190,16 +191,23 @@ export default defineComponent({
     const tableLoadingFinish = (elements) => {
       table.isLoading = false;
       Array.prototype.forEach.call(elements, function (element) {
+        if (element.classList.contains("name-btn")) {
+          element.addEventListener("click", function () {
+            emitir(this.dataset.id);
+          });
+        }
         if (element.classList.contains("quick-btn")) {
           element.addEventListener("click", function () {
-            eliminarUsuario(this.dataset.id);
+            usuarios.eliminarUsuario(this.dataset.id);
+            usuarios.obtenerListaUsuarios(this.dataset.id);
+            cargaGrilla(usuarios.listaUsuarios);
           });
         }
       });
     };
-    const eliminarUsuario = (id) => {};
-
-    const buscarUsuarios = (cotizacion) => {};
+    function emitir(oUsuarios) {
+      emit("emitUsuario", oUsuarios);
+    }
 
     return {
       searchTerm,

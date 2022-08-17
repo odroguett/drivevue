@@ -38,6 +38,7 @@
                       class="btn btn-outline-secondary"
                       data-bs-toggle="modal"
                       data-bs-target="#agregarModal"
+                      id="btnModal"
                     >
                       Agregar
                     </button>
@@ -74,7 +75,10 @@
         </div>
         <div class="container">
           <hr />
-          <GrillaUsuarios ref="refUsuarios"></GrillaUsuarios>
+          <GrillaUsuarios
+            ref="refUsuarios"
+            @emitUsuario="obtenerDatosUsuario"
+          ></GrillaUsuarios>
         </div>
       </panel-body>
     </panel>
@@ -204,12 +208,19 @@ export default {
       await usuarios.obtenerListaUsuarios(id);
       refUsuarios.value.cargaGrilla(usuarios.listaUsuarios);
     };
+    const obtenerDatosUsuario = (datosUsuario) => {
+      usuarios.obtenerUsuario(datosUsuario);
+      let modal;
+      modal = document.getElementById("btnModal");
+      modal.click();
+    };
 
     return {
       usuarios,
       seleccion,
       compania,
       refUsuarios,
+      obtenerDatosUsuario,
       cargaGrilla,
     };
   },

@@ -52,9 +52,7 @@ class Usuarios extends oInstituciones.Instituciones {
         });
     }
   }
-   async obtenerListaUsuarios(id) {
-    debugger;
-
+  async obtenerListaUsuarios(id) {
     await interceptor
       .get("usuarios/obtenerListaUsuarios", { params: { id: id } })
       .then((response) => {
@@ -67,6 +65,42 @@ class Usuarios extends oInstituciones.Instituciones {
       })
       .catch((err) => {
         console.log(err);
+      });
+  }
+  async obtenerUsuario(usuario) {
+    await interceptor
+      .get("usuarios/obtenerUsuario", { params: { usuario: usuario } })
+      .then((response) => {
+        if (response.data.esValido) {
+          this.usuario.usuario = response.data.objeto[0].usuario;
+          this.usuario.password = "";
+          this.usuario.descripcion = response.data.objeto[0].descripcion;
+          this.usuario.activo = response.data.objeto[0].activo;
+          this.usuario.institucion_id = response.data.objeto[0].institucion_id;
+          this.usuario.email = response.data.objeto[0].email;
+        } else {
+          alert("sin datos");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  eliminarUsuario(id) {
+    interceptor
+      .delete("/usuarios/eliminarUsuario?id=" + id)
+      .then((response) => {
+        if (response && response.data) {
+        } else {
+          if (response.status === "401") {
+            alert("Error al eliminar Usuarios");
+          }
+        }
+      })
+      .catch((error) => {
+        if (error.response !== undefined && error.response.status === "400") {
+          alert("Error al obtener instituciones");
+        }
       });
   }
 
