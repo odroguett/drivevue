@@ -47,17 +47,15 @@
             </div>
           </nav>
         </div>
-       <div class="container">
-            <hr />
+        <div class="container">
+          <hr />
           <div class="row">
             <div
               v-for="(value, key) in usuarios.listaInstituciones"
               class="col-sm-3"
             >
               <div class="card border-primary mb-3" style="max-width: 18rem">
-                <div class="card-header">
-                  Compania Seguro
-                </div>
+                <div class="card-header">Compania Seguro</div>
                 <div class="card-body text-primary">
                   <h6 class="card-title">{{ value.descripcion }}</h6>
                   <p class="card-text">Rut: {{ value.RUT }}</p>
@@ -65,8 +63,8 @@
                     href="#"
                     data-bs-toggle="modal"
                     data-bs-target="#modificarModal"
-                    
                     class="btn btn-primary"
+                    @click="cargaGrilla(value._id)"
                     >Usuarios</a
                   >
                 </div>
@@ -76,7 +74,7 @@
         </div>
         <div class="container">
           <hr />
-          <GrillaUsuarios></GrillaUsuarios>
+          <GrillaUsuarios ref="refUsuarios"></GrillaUsuarios>
         </div>
       </panel-body>
     </panel>
@@ -101,19 +99,35 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <input class="form-control" placeholder="Usuario" />
+            <input
+              class="form-control"
+              v-model="usuarios.usuario.usuario"
+              placeholder="Usuario"
+            />
             <br />
           </div>
           <div class="form-group">
-            <input class="form-control" placeholder="Password" />
+            <input
+              class="form-control"
+              v-model="usuarios.usuario.password"
+              placeholder="Password"
+            />
             <br />
           </div>
           <div class="form-group">
-            <input class="form-control" placeholder="Descripcion" />
+            <input
+              class="form-control"
+              v-model="usuarios.usuario.descripcion"
+              placeholder="Descripcion"
+            />
           </div>
           <br />
           <div class="form-group">
-            <input class="form-control" placeholder="Email" />
+            <input
+              class="form-control"
+              v-model="usuarios.usuario.email"
+              placeholder="Email"
+            />
           </div>
           <br />
           <select
@@ -121,13 +135,18 @@
             class="form-select"
             aria-label="Default select example"
           >
+            <option selected></option>
             <option v-for="(value, key) in usuarios.listaActivos">
               {{ value.activo }}
             </option>
           </select>
           <br />
           <div class="col-md-12">
-            <select v-model="compania" class="form-select" aria-label="Default select example">
+            <select
+              v-model="compania"
+              class="form-select"
+              aria-label="Default select example"
+            >
               <option selected>Compañias</option>
               <option v-for="(value, key) in usuarios.listaInstituciones">
                 {{ value.descripcion }}
@@ -136,7 +155,13 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Aceptar</button>
+          <button
+            type="button"
+            @click="usuarios.agregarUsuario()"
+            class="btn btn-primary"
+          >
+            Aceptar
+          </button>
         </div>
       </div>
     </div>
@@ -152,6 +177,7 @@ export default {
   name: "Usuarios",
   components: { GrillaUsuarios },
   setup: () => {
+    const refUsuarios = ref(null);
     let seleccion = ref("SI");
     let compania = ref(null);
     let usuarios = reactive(new oUsuarios.Usuarios());
@@ -161,21 +187,30 @@ export default {
       usuarios.obtenerListaInstituciones();
       compania.value = "Compañias";
     });
+
     watch(seleccion, (old) => {
-      usuarios.usuario.ACTIVO = old;
+      usuarios.usuario.activo = old;
     });
-     watch(compania, (old) => {
-      if(old !="COMPAÑIAS")
-      {
-        usuarios.usuario.ID_COMPANIA = old;
+    watch(compania, (old) => {
+      if (old != "COMPAÑIAS") {
+        usuarios.listaInstituciones.forEach((element) => {
+          if (element.descripcion === old) {
+            usuarios.usuario.institucion_id = element._id;
+          }
+        });
       }
-      
     });
+    const cargaGrilla = async (id) => {
+      await usuarios.obtenerListaUsuarios(id);
+      refUsuarios.value.cargaGrilla(usuarios.listaUsuarios);
+    };
 
     return {
       usuarios,
       seleccion,
       compania,
+      refUsuarios,
+      cargaGrilla,
     };
   },
 };

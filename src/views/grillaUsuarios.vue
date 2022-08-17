@@ -15,11 +15,16 @@
       >
       </v-button>
     </div>
-    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 labelBuscar">
+    <div class="row">
+      
+    <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 labelBuscar">
       <label>Buscar: <input class="form-control" v-model="searchTerm" /></label>
     </div>
-  </div>
 
+    </div>
+    
+  </div>
+  <br />
   <table-lite
     :is-static-mode="true"
     :is-loading="table.isLoading"
@@ -56,6 +61,7 @@ export default defineComponent({
       DESCRIPCION: Number,
     });
     const cargaGrilla = (valoresCargaGrilla) => {
+      debugger;
       valoresTabla = valoresCargaGrilla;
       bTablaCargada.value = false;
       table.isLoading = true;
@@ -70,13 +76,15 @@ export default defineComponent({
           data.rows = valoresTabla;
           let newData = data.rows.filter(
             (x) =>
-              x.BENEFICIARIO.toLowerCase().includes(keyword.toLowerCase()) ||
-              x.RUT_BENEFICIARIO.toLowerCase().includes(
-                keyword.toLowerCase() ||
-                  x.modalidad_renta
-                    .toLowerCase()
-                    .includes(keyword.toLowerCase())
-              )
+              x.usuario.toLowerCase().includes(keyword.toLowerCase()) ||
+              x.descripcion
+                .toLowerCase()
+                .includes(
+                  keyword.toLowerCase() ||
+                    x.modalidad_renta
+                      .toLowerCase()
+                      .includes(keyword.toLowerCase())
+                )
           );
           table.isLoading = false;
           resolve(newData);
@@ -92,21 +100,27 @@ export default defineComponent({
       columns: [
         {
           label: "id",
-          field: "ID",
+          field: "_id",
           width: "10%",
           sortable: true,
           isKey: true,
         },
         {
           label: "usuario",
-          field: "USUARIO",
+          field: "usuario",
           width: "10%",
           sortable: true,
           isKey: true,
         },
         {
           label: "Descripcion",
-          field: "DESCRIPCION",
+          field: "descripcion",
+          width: "10%",
+          sortable: true,
+        },
+        {
+          label: "email",
+          field: "email",
           width: "10%",
           sortable: true,
         },
@@ -122,10 +136,10 @@ export default defineComponent({
                     </button>
               <ul class="dropdown-menu" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -39px);">
               <li><a class="is-rows-el edit-btn  name-btn dropdown-item" data-id="` +
-              row.ID +
+              row._id +
               `">Modificar</a></li>
               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.ID +
+              row._id +
               `">Eliminar</a></li>
               </ul>
               </div>`
@@ -183,14 +197,9 @@ export default defineComponent({
         }
       });
     };
-    const eliminarUsuario = (id) => {
-      
-    };
-    
-    const buscarUsuarios = (cotizacion) => {
-      
-     
-    };
+    const eliminarUsuario = (id) => {};
+
+    const buscarUsuarios = (cotizacion) => {};
 
     return {
       searchTerm,
@@ -215,11 +224,11 @@ export default defineComponent({
   border: none;
 }
 ::v-deep(.vtl-paging-info) {
-  color: rgb(172, 0, 0);
+  color: rgb(96, 205, 224);
 }
 ::v-deep(.vtl-paging-count-label),
 ::v-deep(.vtl-paging-page-label) {
-  color: rgb(172, 0, 0);
+  color: rgb(96, 205, 224);
 }
 ::v-deep(.vtl-paging-pagination-page-link) {
   border: none;

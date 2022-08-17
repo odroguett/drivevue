@@ -5,21 +5,33 @@ const funciones = require("../clases/funciones");
 class Usuarios extends oInstituciones.Instituciones {
   oFunciones = new funciones();
   usuario = {
-    ID: Number,
-    USUARIO: String,
-    PASSWORD: String,
-    DESCRIPCION: String,
-    ACTIVO: String,
-    EMAIL: String,
-    ID_COMPANIA: String,
+    id: Number,
+    usuario: String,
+    password: String,
+    descripcion: String,
+    activo: String,
+    email: String,
+    institucion_id: String,
+    perfil: String,
   };
   listaActivos = [{ activo: "SI" }, { activo: "NO" }];
+  listaUsuarios = [];
   inicializar() {
-    this.usuario.ACTIVO = "SI";
+    this.usuario.usuario = "";
+    this.usuario.activo = "SI";
+    this.usuario.password = "";
+    this.usuario.descripcion = "";
+    this.usuario.activo = "";
+    this.usuario.institucion_id = "";
+    this.usuario.email = "";
+    this.usuario.perfil = "administrador";
   }
-  agregarUsuarios() {
+  agregarUsuario() {
     this.mensajeError = "";
-    let bError = this.validaDatos();
+    if (this.usuario.activo === "") {
+      this.usuario.activo = "SI";
+    }
+    let bError = this.validaDatosUsuario();
     console.log(bError);
 
     if (bError == false) {
@@ -29,7 +41,7 @@ class Usuarios extends oInstituciones.Instituciones {
           if (response && response.data) {
           } else {
             if (response.status === "401") {
-              alert("Error al obtener instituciones");
+              alert("Error al obtener usuarios");
             }
           }
         })
@@ -40,7 +52,30 @@ class Usuarios extends oInstituciones.Instituciones {
         });
     }
   }
+   async obtenerListaUsuarios(id) {
+    debugger;
+
+    await interceptor
+      .get("usuarios/obtenerListaUsuarios", { params: { id: id } })
+      .then((response) => {
+        if (response.data.esValido) {
+          this.listaUsuarios = response.data.objeto;
+          return this.listaUsuarios;
+        } else {
+          alert("sin datos");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  validaDatosUsuario() {
+    let bError = false;
+    return bError;
+  }
 }
+
 export const oUsuarios = {
   Usuarios,
 };
