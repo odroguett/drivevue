@@ -26,6 +26,7 @@
   </div>
 
   <table-lite
+    id="tabla"
     :is-static-mode="true"
     :is-loading="table.isLoading"
     :columns="table.columns"
@@ -61,30 +62,23 @@ export default defineComponent({
     var valoresTabla;
     var grillaTabla = ref(null);
     var bTablaCargada = ref(false);
-    var datosCreacionPoliza = ref([]);
     const data = reactive({
       rows: [],
     });
-    var cotizacion = reactive({
-      COTIZANTE: Number,
-      COTIZACION: Number,
-      BENEFICIARIO: Number,
+    onMounted(() => {
+      addRowHandlers();
     });
 
-    const cargaDatos = (datosCreacionPoliza) => {
-      cargaGrilla(datosCreacionPoliza.ListaCotizacionesBeneficiarios);
+    const cargaDatos = (datosCarpetas) => {
+      cargaGrilla(datosCarpetas.ListaCarpetas);
     };
-    /* onMounted(() => {
-          datosCreacionPoliza = JSON.parse(route.params.datosCreacionPoliza);
-          
-          // eslint-disable-next-line vue/no-ref-as-operand
-          if (datosCreacionPoliza.ListaCotizacionesBeneficiarios != undefined) {
-            // eslint-disable-next-line vue/no-ref-as-operand
-            cargaGrilla(datosCreacionPoliza.ListaCotizacionesBeneficiarios);
-          }
-        }); */
+
+    onMounted(() => {
+     addRowHandlers();
+    });
 
     const cargaGrilla = (valoresCargaGrilla) => {
+      debugger;
       valoresTabla = valoresCargaGrilla;
       bTablaCargada.value = false;
       table.isLoading = true;
@@ -99,13 +93,15 @@ export default defineComponent({
           data.rows = valoresTabla;
           let newData = data.rows.filter(
             (x) =>
-              x.BENEFICIARIO.toLowerCase().includes(keyword.toLowerCase()) ||
-              x.RUT_BENEFICIARIO.toLowerCase().includes(
-                keyword.toLowerCase() ||
-                  x.modalidad_renta
-                    .toLowerCase()
-                    .includes(keyword.toLowerCase())
-              )
+              x.nombre.toLowerCase().includes(keyword.toLowerCase()) ||
+              x.usuario
+                .toLowerCase()
+                .includes(
+                  keyword.toLowerCase() ||
+                    x.modalidad_renta
+                      .toLowerCase()
+                      .includes(keyword.toLowerCase())
+                )
           );
           table.isLoading = false;
           resolve(newData);
@@ -121,14 +117,17 @@ export default defineComponent({
       columns: [
         {
           label: "Nombre",
-          field: "NOMBRE",
+          field: "nombre",
           width: "10%",
           sortable: true,
           isKey: true,
+           display: function (row) {
+            return (`<a href=#><span class="is-rows-el seleccionar-btn" data-id="${row.nombre}"</span>${row.nombre}</a>`);
+          },
         },
         {
-          label: "Fecha modificación",
-          field: "FECHA_MODIFICACION",
+          label: "usuario",
+          field: "usuario",
           width: "10%",
           sortable: true,
           isKey: true,
@@ -151,20 +150,27 @@ export default defineComponent({
                      Menú
                     </button>
               <ul class="dropdown-menu" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -39px);">
-              <li><a class="is-rows-el edit-btn  name-btn dropdown-item" data-id="` +
-              row.COTIZANTE +
-              "/" +
-              row.COTIZACION +
-              "/" +
-              row.BENEFICIARIO +
-              `">Modificar</a></li>
+              
               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.COTIZANTE +
+              row.nombre +
               "/" +
-              row.COTIZACION +
-              "/" +
-              row.BENEFICIARIO +
+              row.usuario +
               `">Eliminar</a></li>
+              <li><a   class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
+              row.nombre +
+              "/" +
+              row.usuario +
+              `">Compartir</a></li>
+              <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
+              row.nombre +
+              "/" +
+              row.usuario +
+              `">Descargar</a></li>
+               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
+              row.nombre +
+              "/" +
+              row.usuario +
+              `">Copiar Enlace</a></li>
               </ul>
               </div>`
             );
@@ -215,6 +221,7 @@ export default defineComponent({
       for (var i = 0; i < item.length; i++) {
         item[i].classList.add("row-highlight");
       }
+      alert("hola");
     };
 
     const desSeleccionar = () => {
@@ -233,84 +240,40 @@ export default defineComponent({
         }
         if (element.classList.contains("quick-btn")) {
           element.addEventListener("click", function () {
-            eliminarCotizacionBeneficiario(this.dataset.id);
+            eliminarCarpeta(this.dataset.id);
+          });
+        }
+         if (element.classList.contains("seleccionar-btn")) {
+          element.addEventListener("click", function () {
+           alert(this.dataset.id);
           });
         }
       });
     };
-    const eliminarCotizacionBeneficiario = (oCotizacion) => {
+    const eliminarCarpeta = (oCotizacion) => {
       debugger;
-      var arrayBusquedacotizacion = oCotizacion.split("/");
-      for (var i = 0; i < arrayBusquedacotizacion.length; i++) {
-        if (i === 0) {
-          cotizacion.COTIZANTE = arrayBusquedacotizacion[i];
-        } else if (i === 1) {
-          cotizacion.COTIZACION = arrayBusquedacotizacion[i];
-        } else if (i === 2) {
-          cotizacion.BENEFICIARIO = arrayBusquedacotizacion[i];
-        }
-      }
-      BenlarService.oBenlar.Alertas.mostrarLoad();
-
-      BenlarService.jwtInterceptor
-        .post(
-          "api_polizas/NuevosNegocios/EliminarCotizacionBeneficiario",
-          cotizacion
-        )
-        .then((response) => {
-          if (response.data.EsValido) {
-            BenlarService.oBenlar.show(
-              response.data.Mensaje,
-              response.data.EsValido
-                ? BenlarService.oBenlar.Constantes().exito
-                : BenlarService.oBenlar.Constantes().alerta
-            );
-            buscarDatosGrillaCotizacionBeneficiario(cotizacion);
-            if (response.data.respuestaArchivosOtd.Archivo != null) {
-              BenlarService.oBenlar.DescargarArchivotemp(
-                response.data.respuestaArchivosOtd.Archivo
-              );
-            }
-          } else {
-            alert("sin datos");
-          }
-
-          BenlarService.oBenlar.Alertas.ocultarLoad();
-        })
-        .catch((err) => {
-          BenlarService.oBenlar.Alertas.ocultarLoad();
-          console.log(err);
-        });
     };
     const emitir = (oCotizacion) => {
       emit("emitBeneficiario", oCotizacion);
     };
-    const buscarDatosGrillaCotizacionBeneficiario = (cotizacion) => {
-      debugger;
-      BenlarService.oBenlar.Alertas.mostrarLoad();
-      BenlarService.jwtInterceptor
-        .post(
-          "api_polizas/NuevosNegocios/BuscarDatosGrillaCotizacionBeneficiario",
-          cotizacion
-        )
-        .then((response) => {
-          if (response.data.EsValido) {
-            table.isLoading = true;
-            data.rows = response.data.ListaCotizacionesBeneficiarios;
-            valoresTabla = response.data.ListaCotizacionesBeneficiarios;
-            table.isLoading = false;
-          } else {
-            alert("sin datos");
-          }
 
-          BenlarService.oBenlar.Alertas.ocultarLoad();
-        })
-        .catch((err) => {
-          BenlarService.oBenlar.Alertas.ocultarLoad();
-          console.log(err);
-        });
-      return;
+    const createClickHandler = (row) => {
+      return () => {
+        const [cell] = row.getElementsByTagName("td");
+        const id = cell.innerHTML;
+        console.log(id);
+      };
     };
+
+    const addRowHandlers = () => {
+
+    const table1 = document.querySelector("table");
+    for (const currentRow of table1.rows) {
+      currentRow.onclick = createClickHandler(currentRow);
+    }
+
+    }
+
 
     return {
       searchTerm,
@@ -329,20 +292,20 @@ export default defineComponent({
 
 <style scoped>
 ::v-deep(.vtl-table .vtl-thead .vtl-thead-th) {
-  color: rgb(24, 106, 228);
-  background-color: #cfe5ee;
-  border-color: #d7e4ea;
+  color: #fff;
+  background-color: #427bb9;
+  border-color: #427bb9;
 }
 ::v-deep(.vtl-table td),
 ::v-deep(.vtl-table tr) {
   border: none;
 }
 ::v-deep(.vtl-paging-info) {
-  color: rgb(172, 0, 0);
+  color: rgb(96, 205, 224);
 }
 ::v-deep(.vtl-paging-count-label),
 ::v-deep(.vtl-paging-page-label) {
-  color: rgb(172, 0, 0);
+  color: rgb(96, 205, 224);
 }
 ::v-deep(.vtl-paging-pagination-page-link) {
   border: none;

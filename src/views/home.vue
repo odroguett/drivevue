@@ -74,47 +74,20 @@
                   Agregar
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#"  data-bs-toggle="modal" data-bs-target="#agregarCarpeta">Nueva Carpeta</a></li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#agregarCarpeta"
+                      >Nueva Carpeta</a
+                    >
+                  </li>
                   <li><a class="dropdown-item" href="#">Subir Archivo</a></li>
                   <li><a class="dropdown-item" href="#">Subir Carpeta</a></li>
                 </ul>
               </div>
-              <button
-                class="nav-link"
-                id="v-pills-profile-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#v-pills-profile"
-                type="button"
-                role="tab"
-                aria-controls="v-pills-profile"
-                aria-selected="false"
-              >
-                Mis Carpetas
-              </button>
-              <button
-                class="nav-link"
-                id="v-pills-messages-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#v-pills-messages"
-                type="button"
-                role="tab"
-                aria-controls="v-pills-messages"
-                aria-selected="false"
-              >
-                Mis Archivos
-              </button>
-              <button
-                class="nav-link"
-                id="v-pills-settings-tab"
-                data-bs-toggle="pill"
-                data-bs-target="#v-pills-settings"
-                type="button"
-                role="tab"
-                aria-controls="v-pills-settings"
-                aria-selected="false"
-              >
-                Recientes
-              </button>
+              
               <button
                 class="nav-link"
                 id="v-pills-settings-tab"
@@ -132,7 +105,7 @@
         </div>
 
         <div class="col-md-10">
-          <carpeta></carpeta>
+          <grillaCarpetas ref="refCarpetas"></grillaCarpetas>
         </div>
       </div>
     </div>
@@ -157,12 +130,22 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <input class="form-control" placeholder="Nombre Carpeta" />
+            <input
+              class="form-control"
+              v-model="oCarpeta.carpeta.nombre"
+              placeholder="Nombre Carpeta"
+            />
             <br />
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Aceptar</button>
+          <button
+            type="button"
+            @click="agregaCarpeta()"
+            class="btn btn-primary"
+          >
+            Aceptar
+          </button>
         </div>
       </div>
     </div>
@@ -170,17 +153,37 @@
 </template>
 
 <script>
-import carpeta from "../views/carpetas.vue";
+import grillaCarpetas from "../views/grillaCarpetas.vue";
 import { onMounted, ref, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
+import { oCarpetas } from "../clases/carpetas";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "home",
   components: {
-    carpeta,
+    grillaCarpetas,
   },
 
-  setup() {},
+  setup: () => {
+    let oCarpeta = new oCarpetas.Carpetas();
+    const refCarpetas = ref(null);
+    const agregaCarpeta = () => {
+      oCarpeta.carpeta.usuario = localStorage.getItem("usuario");
+    };
+    onMounted(() => {
+      cargaGrilla();
+    });
+    const cargaGrilla = async () => {
+      let usuario = localStorage.getItem("usuario");
+      await oCarpeta.obtenerListaCarpetas(usuario);
+      refCarpetas.value.cargaGrilla(oCarpeta.listaCarpetas);
+    };
+    return {
+      oCarpeta,
+      agregaCarpeta,
+      refCarpetas,
+    };
+  },
 };
 </script>

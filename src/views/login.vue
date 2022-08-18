@@ -94,6 +94,7 @@ export default {
           if (response && response.data) {
             localStorage.setItem("isAuthenticated", "true");
             localStorage.setItem("auth_token", response.data.token);
+            localStorage.setItem("usuario", objetoUsuario.usuario);
             // localStorage.setItem('auth_usuario', response.data.usuario);
             router.push("/");
           } else {
