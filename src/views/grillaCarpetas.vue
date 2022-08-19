@@ -40,16 +40,10 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  reactive,
-  ref,
-  computed,
-  watch,
-  onMounted,
-} from "vue";
+import { defineComponent, reactive, ref, computed, watch } from "vue";
 import TableLite from "vue3-table-lite";
-import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
+import { oCarpetas } from "../clases/carpetas";
 
 export default defineComponent({
   name: "grillaDatosBeneficiario",
@@ -57,28 +51,24 @@ export default defineComponent({
   emits: ["emitBeneficiario"],
   setup(props, { emit }) {
     const searchTerm = ref("");
-    const route = useRoute();
+
     //Esta variable se utiliza para el buscar
-    var valoresTabla;
-    var grillaTabla = ref(null);
-    var bTablaCargada = ref(false);
+    let valoresTabla;
+    let grillaTabla = ref(null);
+    let bTablaCargada = ref(false);
+    let oCarpeta =  reactive( new oCarpetas.Carpetas());
+    const router = useRouter();
+
     const data = reactive({
       rows: [],
-    });
-    onMounted(() => {
-      addRowHandlers();
     });
 
     const cargaDatos = (datosCarpetas) => {
       cargaGrilla(datosCarpetas.ListaCarpetas);
     };
 
-    onMounted(() => {
-     addRowHandlers();
-    });
-
     const cargaGrilla = (valoresCargaGrilla) => {
-      debugger;
+      
       valoresTabla = valoresCargaGrilla;
       bTablaCargada.value = false;
       table.isLoading = true;
@@ -121,8 +111,8 @@ export default defineComponent({
           width: "10%",
           sortable: true,
           isKey: true,
-           display: function (row) {
-            return (`<a href=#><span class="is-rows-el seleccionar-btn" data-id="${row.nombre}"</span>${row.nombre}</a>`);
+          display: function (row) {
+            return `<a href=#><span class="is-rows-el seleccionar-btn" data-id="${row._id}"</span>${row.nombre}</a>`;
           },
         },
         {
@@ -243,37 +233,18 @@ export default defineComponent({
             eliminarCarpeta(this.dataset.id);
           });
         }
-         if (element.classList.contains("seleccionar-btn")) {
+        if (element.classList.contains("seleccionar-btn")) {
           element.addEventListener("click", function () {
-           alert(this.dataset.id);
+            // alert(this.dataset.id);
+            oCarpeta.cargarArchivos(this.dataset.id, router);
           });
         }
       });
     };
-    const eliminarCarpeta = (oCotizacion) => {
-      debugger;
-    };
+    const eliminarCarpeta = (oCotizacion) => {};
     const emitir = (oCotizacion) => {
       emit("emitBeneficiario", oCotizacion);
     };
-
-    const createClickHandler = (row) => {
-      return () => {
-        const [cell] = row.getElementsByTagName("td");
-        const id = cell.innerHTML;
-        console.log(id);
-      };
-    };
-
-    const addRowHandlers = () => {
-
-    const table1 = document.querySelector("table");
-    for (const currentRow of table1.rows) {
-      currentRow.onclick = createClickHandler(currentRow);
-    }
-
-    }
-
 
     return {
       searchTerm,

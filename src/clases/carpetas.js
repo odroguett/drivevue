@@ -1,6 +1,11 @@
 import interceptor from "../compartido/jwt.interceptor";
+
+const funciones = require("../clases/funciones");
 class Carpetas {
+  oFunciones = new funciones();
   listaCarpetas = [];
+  listaArchivos = [];
+  idCarpeta;
   carpeta = {
     nombre: String,
     usuario: String,
@@ -28,12 +33,10 @@ class Carpetas {
   }
 
   async obtenerListaCarpetas(usuario) {
-    debugger;
-     await interceptor
+    await interceptor
       .get("carpetas/obtenerListaCarpetas", { params: { usuario: usuario } })
       .then((response) => {
         if (response.data.esValido) {
-          
           this.listaCarpetas = response.data.objeto;
         } else {
           alert("sin datos");
@@ -47,6 +50,45 @@ class Carpetas {
   validaDatosCarpeta() {
     let bError = false;
     return bError;
+  }
+
+  cargarArchivos(id, router) {
+    router.push({
+      name: "carpetas",
+      params: { id: id },
+    });
+  }
+  obtenerArchivos() {
+    interceptor
+      .get("archivos/obtenerArchivos", { params: { id: this.idCarpeta } })
+      .then((response) => {
+        if (response.data.esValido) {
+          this.listaArchivos = response.data.objeto;
+        } else {
+          alert("sin datos");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  descargarArchivo(link) {
+    interceptor
+      .get("archivos/descargar",{ params: { id: link }, responseType: 'arraybuffer'  })
+      
+      .then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        fileLink.setAttribute("download", "file.jpg");
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 

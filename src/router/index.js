@@ -4,12 +4,14 @@ import home from "../views/home.vue";
 import instituciones from "./instituciones";
 import usuarios from "./usuarios";
 import perfiles from "./perfiles";
+import carpetas from "./carpetas";
 
 const routes = [
   ...loginRouter,
   ...instituciones,
   ...usuarios,
   ...perfiles,
+  ...carpetas,
   {
     path: "/",
     name: "home",
