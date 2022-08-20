@@ -6,6 +6,7 @@ class Carpetas {
   listaCarpetas = [];
   listaArchivos = [];
   idCarpeta;
+  subirArchivo = [];
   carpeta = {
     nombre: String,
     usuario: String,
@@ -74,11 +75,14 @@ class Carpetas {
   }
   descargarArchivo(link) {
     interceptor
-      .get("archivos/descargar",{ params: { id: link }, responseType: 'arraybuffer'  })
-      
+      .get("archivos/descargar", {
+        params: { id: link },
+        responseType: "arraybuffer",
+      })
+
       .then((response) => {
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
+        let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        let fileLink = document.createElement("a");
 
         fileLink.href = fileURL;
         fileLink.setAttribute("download", "file.zip");
@@ -90,6 +94,32 @@ class Carpetas {
         console.log(err);
       });
   }
+
+  subir() {
+    var bodyFormData = new FormData();
+    let json = {
+      descripcion: "Pago pensiones versión 2022.04.05",
+      texto: " Modulo por pruebas ",
+      desactivar: "NO",
+      link: "",
+      nombre: "",
+      id_carpeta: "62fd74e8723c7046ad7b78b9",
+      numero: "100",
+    };
+
+    bodyFormData.append("objectJSON", JSON.stringify(json));
+    this.subirArchivo.forEach((element) => {
+      bodyFormData.append("archivo", element);
+      interceptor
+        .post("archivos/subir", bodyFormData)
+        .then((response) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }
+
+  subirArchivo() {}
 }
 
 export const oCarpetas = {

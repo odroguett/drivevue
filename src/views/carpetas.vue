@@ -32,23 +32,32 @@
                     </li>
                   </div>
 
-                  <li class="nav-item">
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#agregarModal"
-                      id="btnModal"
-                    >
-                      Agregar
-                    </button>
-                  </li>
+                  <li class="nav-item"></li>
                 </ul>
               </div>
             </div>
           </nav>
         </div>
         <div class="container">
+            <div class="row">
+            <div clas="col-sm-3">
+              <div class="sm-3">
+                <input
+                  class="form-control"
+                  type="file"
+                  ref="archivo"
+                  @change="obtenerListaArchivo()"
+                  multiple
+                />
+              </div>
+            </div>
+            <div clas="col-sm-3">
+               <button @click="oCarpeta.subir()"  class="btn btn-outline-secondary">Subir</button>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+        
           <hr />
           <div class="row">
             <div
@@ -61,7 +70,12 @@
                   <h5 class="card-title">{{ value.numero }}</h5>
                   <p class="card-text">{{ value.descripcion }}</p>
                   <p class="card-text">{{ value.texto }}</p>
-                  <a href="#" @click=oCarpeta.descargarArchivo(value.link)  class="btn btn-primary">Descargar</a>
+                  <a
+                    href="#"
+                    @click="oCarpeta.descargarArchivo(value.link)"
+                    class="btn btn-primary"
+                    >Descargar</a
+                  >
                 </div>
               </div>
             </div>
@@ -72,7 +86,7 @@
   </body>
 </template>
 <script>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { oCarpetas } from "../clases/carpetas";
 import { useRoute } from "vue-router";
 
@@ -80,17 +94,29 @@ export default {
   name: "carpetas",
   components: {},
   setup: () => {
-    //let idCarpeta = ref(null);
+    let archivo = ref(null);
     let oCarpeta = reactive(new oCarpetas.Carpetas());
     const route = useRoute();
+    const obtenerListaArchivo =() =>
+    {
+      debugger;
+       for (let index = 0; index < archivo.value.files.length; index++) {
+        oCarpeta.subirArchivo.push(archivo.value.files[index]);
+      } 
+      
+      console.log(oCarpeta.subirArchivo);
+
+    }
 
     onMounted(() => {
       oCarpeta.idCarpeta = route.params.id;
       oCarpeta.obtenerArchivos();
     });
-    
+
     return {
       oCarpeta,
+      obtenerListaArchivo,
+      archivo,
     };
   },
 };
