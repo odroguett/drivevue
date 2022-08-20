@@ -68,7 +68,7 @@
                 </div>
                 <div class="card-body text-primary">
                   <h6 class="card-title">{{ value.descripcion }}</h6>
-                  <p class="card-text">Rut: {{ value.RUT }}</p>
+                  <p class="card-text">Rut: {{ value.rut }}</p>
                   <a
                     href="#"
                     data-bs-toggle="modal"
@@ -78,7 +78,7 @@
                         'M',
                         value._id,
                         value.descripcion,
-                        value.RUT
+                        value.rut
                       )
                     "
                     class="btn btn-primary"
@@ -140,7 +140,7 @@
             <input
               class="form-control"
               placeholder="RUT"
-              v-model="instituciones.institucion.RUT"
+              v-model="instituciones.institucion.rut"
             />
             <br />
           </div>
@@ -197,7 +197,7 @@
             <input
               class="form-control"
               placeholder="RUT"
-              v-model="instituciones.institucion.RUT"
+              v-model="instituciones.institucion.rut"
             />
             <br />
           </div>

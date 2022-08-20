@@ -9,7 +9,7 @@ class Instituciones {
   institucion = {
     id: "",
     descripcion: "",
-    RUT: "",
+    rut: "",
   };
 
   obtenerListaInstituciones() {
@@ -19,6 +19,7 @@ class Instituciones {
         if (response && response.data) {
           response = response.data.objeto;
           response.forEach((element) => {
+            console.log(element);
             this.listaInstituciones.push(element);
           });
         } else {
@@ -59,15 +60,15 @@ class Instituciones {
     }
   }
 
-  tipoProceso(tipoProceso, id, descripcion, RUT) {
+  tipoProceso(tipoProceso, id, descripcion, rut) {
     if (tipoProceso === "M") {
       this.institucion.id = id;
       this.institucion.descripcion = descripcion;
-      this.institucion.RUT = RUT;
+      this.institucion.rut = rut;
     } else {
       this.institucion.id = "";
       this.institucion.descripcion = "";
-      this.institucion.RUT = "";
+      this.institucion.rut = "";
     }
     this.mensajeError = "";
   }
@@ -124,7 +125,7 @@ class Instituciones {
     let bError = false;
     let mensaje = "";
     // eslint-disable-next-line prettier/prettier
-    mensaje = this.oFunciones.validaLargoMinimoCampo(3,this.institucion.id.length);
+   /*  mensaje = this.oFunciones.validaLargoMinimoCampo(3,this.institucion.id.length);
     if (mensaje != "") {
       bError = true;
       this.mensajeError = mensaje;
@@ -140,12 +141,12 @@ class Instituciones {
     }
     mensaje = this.oFunciones.validaLargoMinimoCampo(
       6,
-      this.institucion.RUT.length
+      this.institucion.rut.length
     );
     if (mensaje != "") {
       bError = true;
       this.mensajeError = mensaje;
-    }
+    } */
     return bError;
   }
 }
