@@ -32,32 +32,23 @@
                     </li>
                   </div>
 
-                  <li class="nav-item"></li>
+                  <li class="nav-item">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    >
+                      Agregar
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
           </nav>
         </div>
+     
         <div class="container">
-            <div class="row">
-            <div clas="col-sm-3">
-              <div class="sm-3">
-                <input
-                  class="form-control"
-                  type="file"
-                  ref="archivo"
-                  @change="obtenerListaArchivo()"
-                  multiple
-                />
-              </div>
-            </div>
-            <div clas="col-sm-3">
-               <button @click="oCarpeta.subir()"  class="btn btn-outline-secondary">Subir</button>
-            </div>
-          </div>
-        </div>
-        <div class="container">
-        
           <hr />
           <div class="row">
             <div
@@ -84,6 +75,83 @@
       </panel-body>
     </panel>
   </body>
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Agregar Compañia</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <input
+            class="form-control text-warning"
+            style="border: 0"
+            disabled
+            placeholder=""
+          />
+          <br />
+          <div class="form-group">
+            <input class="form-control" placeholder="Descripcion" v-model="oCarpeta.archivo.descripcion" />
+            
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
+              <label
+                for="exampleFormControlTextarea1"
+                class="form-label"
+              ></label>
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="3"
+                v-model="oCarpeta.archivo.texto"
+              ></textarea>
+            </div>
+            <br />
+          </div>
+             <div class="container">
+          <div class="row">
+           
+              <div class="sm-2">
+                <input
+                  class="form-control"
+                  type="file"
+                  ref="archivo"
+                  @change="obtenerListaArchivo()"
+                  multiple
+                />
+              </div>
+              <div clas="col-sm-3">
+              <button
+                @click="oCarpeta.subir()"
+                class="btn btn-outline-secondary"
+              >
+                Subir
+              </button>
+            </div>
+            </div>
+             
+          
+        </div>
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import { onMounted, reactive, ref } from "vue";
@@ -97,18 +165,17 @@ export default {
     let archivo = ref(null);
     let oCarpeta = reactive(new oCarpetas.Carpetas());
     const route = useRoute();
-    const obtenerListaArchivo =() =>
-    {
+    const obtenerListaArchivo = () => {
       debugger;
-       for (let index = 0; index < archivo.value.files.length; index++) {
+      for (let index = 0; index < archivo.value.files.length; index++) {
         oCarpeta.subirArchivo.push(archivo.value.files[index]);
-      } 
-      
-      console.log(oCarpeta.subirArchivo);
+      }
 
-    }
+      console.log(oCarpeta.subirArchivo);
+    };
 
     onMounted(() => {
+      oCarpeta.inicializarDatos();
       oCarpeta.idCarpeta = route.params.id;
       oCarpeta.obtenerArchivos();
     });

@@ -11,6 +11,23 @@ class Carpetas {
     nombre: String,
     usuario: String,
   };
+  archivo = {
+    descripcion: String,
+    texto: String,
+    id_carpeta: String,
+    link: String,
+    desactivar: String,
+  };
+
+  inicializarDatos() {
+    this.carpeta.nombre = "";
+    this.carpeta.usuario = "";
+    this.archivo.descripcion = "";
+    this.archivo.texto = "";
+    this.archivo.id_carpeta = "";
+    this.archivo.link = "";
+    this.archivo.desactivar = "NO";
+  }
 
   agregarCarpeta() {
     let bError = this.validaDatosCarpeta();
@@ -97,17 +114,20 @@ class Carpetas {
 
   subir() {
     var bodyFormData = new FormData();
-    let json = {
+    /* let json = {
       descripcion: "Pago pensiones versión 2022.04.05",
       texto: " Modulo por pruebas ",
-      desactivar: "NO",
-      link: "",
-      nombre: "",
       id_carpeta: "62fd74e8723c7046ad7b78b9",
-      numero: "100",
-    };
+      link: "",
+      //numero: "100",
+      // desactivar: "NO",
+      //  nombre: "",
+    }; */
 
-    bodyFormData.append("objectJSON", JSON.stringify(json));
+    this.archivo.id_carpeta = this.idCarpeta;
+    debugger;
+
+    bodyFormData.append("objectJSON", JSON.stringify(this.archivo));
     this.subirArchivo.forEach((element) => {
       bodyFormData.append("archivo", element);
       interceptor
