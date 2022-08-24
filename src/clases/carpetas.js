@@ -19,6 +19,16 @@ class Carpetas {
     desactivar: String,
   };
 
+  ListaArchivos = [
+    {
+      descripcion: String,
+      texto: String,
+      id_carpeta: String,
+      link: String,
+      desactivar: String,
+    },
+  ];
+
   inicializarDatos() {
     this.carpeta.nombre = "";
     this.carpeta.usuario = "";
@@ -113,33 +123,40 @@ class Carpetas {
   }
 
   subir() {
-    var bodyFormData = new FormData();
-    /* let json = {
-      descripcion: "Pago pensiones versión 2022.04.05",
-      texto: " Modulo por pruebas ",
-      id_carpeta: "62fd74e8723c7046ad7b78b9",
-      link: "",
-      //numero: "100",
-      // desactivar: "NO",
-      //  nombre: "",
-    }; */
-
+    let bodyFormData = new FormData();
     this.archivo.id_carpeta = this.idCarpeta;
     debugger;
 
     bodyFormData.append("objectJSON", JSON.stringify(this.archivo));
-    this.subirArchivo.forEach((element) => {
-      bodyFormData.append("archivo", element);
-      interceptor
-        .post("archivos/subir", bodyFormData)
-        .then((response) => {})
-        .catch((err) => {
-          console.log(err);
-        });
-    });
-  }
+    if(this.subirArchivo.length==1)
+    {
+      this.subirArchivo.forEach((element) => {
+        bodyFormData.append("archivo", element);
+        interceptor
+          .post("archivos/subir", bodyFormData)
+          .then((response) => {})
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    }
+    else{
+      //this.subirArchivo.forEach((element) => {
+        this.subirArchivo.forEach((element) => {
+          bodyFormData.append("archivos", element);
+        })
 
-  subirArchivo() {}
+        interceptor
+          .post("archivos/subirListaArchivos", bodyFormData)
+          .then((response) => {})
+          .catch((err) => {
+            console.log(err);
+          });
+     /// });
+    }
+    
+  }
+  
 }
 
 export const oCarpetas = {
