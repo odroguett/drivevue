@@ -56,6 +56,12 @@
               v-for="(value, key) in oCarpeta.listaArchivos"
             >
               <div class="card" style="width: 18rem">
+                <a
+                    href="#"
+                    @click="oCarpeta.eliminar(value.numero)"
+                    class=""
+                    >X</a
+                  >
                 <img src="" class="card-img-top" alt="" />
                 <div class="card-body">
                   <h5 class="card-title">{{ value.numero }}</h5>

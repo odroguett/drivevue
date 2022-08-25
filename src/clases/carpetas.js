@@ -141,20 +141,22 @@ class Carpetas {
       });
     }
     else{
-      //this.subirArchivo.forEach((element) => {
         this.subirArchivo.forEach((element) => {
+          console.log(element);
           bodyFormData.append("archivos", element);
         })
-
         interceptor
           .post("archivos/subirListaArchivos", bodyFormData)
           .then((response) => {})
           .catch((err) => {
             console.log(err);
           });
-     /// });
     }
-    
+  }
+  eliminar(link)
+  {
+alert(link)
+
   }
   
 }
