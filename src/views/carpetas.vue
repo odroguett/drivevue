@@ -58,7 +58,7 @@
               <div class="card" style="width: 18rem">
                 <a
                     href="#"
-                    @click="oCarpeta.eliminar(value.numero)"
+                    @click="oCarpeta.eliminar(value.link)"
                     class=""
                     >X</a
                   >

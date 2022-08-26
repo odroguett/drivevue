@@ -128,8 +128,7 @@ class Carpetas {
     debugger;
 
     bodyFormData.append("objectJSON", JSON.stringify(this.archivo));
-    if(this.subirArchivo.length==1)
-    {
+    if (this.subirArchivo.length == 1) {
       this.subirArchivo.forEach((element) => {
         bodyFormData.append("archivo", element);
         interceptor
@@ -139,26 +138,26 @@ class Carpetas {
             console.log(err);
           });
       });
-    }
-    else{
-        this.subirArchivo.forEach((element) => {
-          console.log(element);
-          bodyFormData.append("archivos", element);
-        })
-        interceptor
-          .post("archivos/subirListaArchivos", bodyFormData)
-          .then((response) => {})
-          .catch((err) => {
-            console.log(err);
-          });
+    } else {
+      this.subirArchivo.forEach((element) => {
+        console.log(element);
+        bodyFormData.append("archivos", element);
+      });
+      interceptor
+        .post("archivos/subirListaArchivos", bodyFormData)
+        .then((response) => {})
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
-  eliminar(link)
-  {
-alert(link)
-
+  eliminar(id) {
+    debugger;
+    interceptor.
+    delete("archivos/eliminarArchivo",{params: {id:id}})
+    .then(response => {})
+    .catch((err) => { console.log(err)});
   }
-  
 }
 
 export const oCarpetas = {
