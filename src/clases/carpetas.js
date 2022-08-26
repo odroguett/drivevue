@@ -4,6 +4,7 @@ const funciones = require("../clases/funciones");
 class Carpetas {
   oFunciones = new funciones();
   listaCarpetas = [];
+  listaCarpetaSelect = [];
   listaArchivos = [];
   idCarpeta;
   subirArchivo = [];
@@ -61,11 +62,13 @@ class Carpetas {
   }
 
   async obtenerListaCarpetas(usuario) {
+    debugger;
     await interceptor
       .get("carpetas/obtenerListaCarpetas", { params: { usuario: usuario } })
       .then((response) => {
         if (response.data.esValido) {
           this.listaCarpetas = response.data.objeto;
+          
         } else {
           alert("sin datos");
         }

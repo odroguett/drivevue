@@ -83,11 +83,21 @@
                       >Nueva Carpeta</a
                     >
                   </li>
-                  <li><a class="dropdown-item" href="#">Subir Archivo</a></li>
+                  <li>
+                    <a
+                      @click="cargarCarpetas()"
+                      class="dropdown-item"
+                      href="#"
+                      data-bs-toggle="modal"
+                      data-bs-target="#subirArchivo"
+                      >Subir Archivo
+                    </a>
+                  </li>
+
                   <li><a class="dropdown-item" href="#">Subir Carpeta</a></li>
                 </ul>
               </div>
-              
+
               <button
                 class="nav-link"
                 id="v-pills-settings-tab"
@@ -150,6 +160,84 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade"
+    id="subirArchivo"
+    tabindex="-1"
+    aria-labelledby="subirArchivo"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="subirArchivo">Archivo</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <input
+            class="form-control text-warning"
+            style="border: 0"
+            disabled
+            placeholder=""
+          />
+          <br />
+          <div class="col-md-12">
+            <select v-model="carpeta"
+              class="form-select"
+              aria-label="Default select example"
+            >
+              <option  v-for="(value,key) in lista"  >
+                <h1>{{key}} : {{ value.nombre }}</h1>
+                 
+              </option>
+            </select>
+          </div>
+          <br />
+          <div class="form-group">
+            <input class="form-control" placeholder="Descripcion" />
+          </div>
+          <div class="form-group">
+            <div class="mb-3">
+              <label
+                for="exampleFormControlTextarea1"
+                class="form-label"
+              ></label>
+              <textarea
+                class="form-control"
+                id="exampleFormControlTextarea1"
+                rows="3"
+              ></textarea>
+            </div>
+            <br />
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="sm-2">
+                <input
+                  class="form-control"
+                  type="file"
+                  ref="archivo"
+                  multiple
+                />
+              </div>
+              <div clas="col-sm-3">
+                <button @click="oCarpeta.Subir()" class="btn btn-outline-secondary">Subir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -157,6 +245,7 @@ import grillaCarpetas from "../views/grillaCarpetas.vue";
 import { onMounted, ref, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import { oCarpetas } from "../clases/carpetas";
+import { list } from "postcss";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -167,22 +256,44 @@ export default {
 
   setup: () => {
     let oCarpeta = new oCarpetas.Carpetas();
+    let carpeta = ref(null);
+    let atributo = ref(null);
     const refCarpetas = ref(null);
+    let lista = reactive([]);
     const agregaCarpeta = () => {
       oCarpeta.carpeta.usuario = localStorage.getItem("usuario");
     };
     onMounted(() => {
       cargaGrilla();
     });
+    watch(carpeta,(old)=> {
+      let cadena = old.split(":");
+      let valor = Number(cadena[0]);
+      let id =lista[valor]._id;
+     
+      alert(id);
+
+      
+    })
     const cargaGrilla = async () => {
       let usuario = localStorage.getItem("usuario");
       await oCarpeta.obtenerListaCarpetas(usuario);
+
       refCarpetas.value.cargaGrilla(oCarpeta.listaCarpetas);
+    };
+    const cargarCarpetas = async () => {
+      oCarpeta.listaCarpetas.forEach((element) => {
+        lista.push(element);
+      });
     };
     return {
       oCarpeta,
       agregaCarpeta,
       refCarpetas,
+      lista,
+      cargarCarpetas,
+      carpeta,
+      atributo
     };
   },
 };
