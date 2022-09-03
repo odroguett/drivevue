@@ -94,7 +94,7 @@
                     </a>
                   </li>
 
-                  <li><a class="dropdown-item" href="#">Subir Carpeta</a></li>
+                  <!-- <li><a class="dropdown-item" href="#">Subir Carpeta</a></li> -->
                 </ul>
               </div>
 
@@ -200,7 +200,7 @@
           </div>
           <br />
           <div class="form-group">
-            <input class="form-control" placeholder="Descripcion" />
+            <input class="form-control" placeholder="Descripcion" v-model="oCarpeta.archivo.descripcion" />
           </div>
           <div class="form-group">
             <div class="mb-3">
@@ -212,6 +212,7 @@
                 class="form-control"
                 id="exampleFormControlTextarea1"
                 rows="3"
+                v-model="oCarpeta.archivo.texto"
               ></textarea>
             </div>
             <br />
@@ -223,11 +224,12 @@
                   class="form-control"
                   type="file"
                   ref="archivo"
+                  @change="obtenerListaArchivo()"
                   multiple
                 />
               </div>
               <div clas="col-sm-3">
-                <button @click="oCarpeta.Subir()" class="btn btn-outline-secondary">Subir</button>
+                <button @click="oCarpeta.subir()" class="btn btn-outline-secondary">Subir</button>
               </div>
             </div>
           </div>
@@ -258,22 +260,21 @@ export default {
     let oCarpeta = new oCarpetas.Carpetas();
     let carpeta = ref(null);
     let atributo = ref(null);
+    let archivo = ref(null);
     const refCarpetas = ref(null);
     let lista = reactive([]);
     const agregaCarpeta = () => {
       oCarpeta.carpeta.usuario = localStorage.getItem("usuario");
+      oCarpeta.agregarCarpeta();
     };
     onMounted(() => {
       cargaGrilla();
     });
     watch(carpeta,(old)=> {
+      
       let cadena = old.split(":");
       let valor = Number(cadena[0]);
-      let id =lista[valor]._id;
-     
-      alert(id);
-
-      
+      oCarpeta.idCarpeta = lista[valor]._id;
     })
     const cargaGrilla = async () => {
       let usuario = localStorage.getItem("usuario");
@@ -286,6 +287,16 @@ export default {
         lista.push(element);
       });
     };
+    const obtenerListaArchivo = () => {
+      debugger;
+      for (let index = 0; index < archivo.value.files.length; index++) {
+        oCarpeta.subirArchivo.push(archivo.value.files[index]);
+      }
+
+      console.log(oCarpeta.subirArchivo);
+    };
+
+    
     return {
       oCarpeta,
       agregaCarpeta,
@@ -293,7 +304,9 @@ export default {
       lista,
       cargarCarpetas,
       carpeta,
-      atributo
+      atributo,
+      obtenerListaArchivo,
+      archivo
     };
   },
 };

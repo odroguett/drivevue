@@ -8,6 +8,7 @@ class Carpetas {
   listaArchivos = [];
   idCarpeta;
   subirArchivo = [];
+  value = "";
   carpeta = {
     nombre: String,
     usuario: String,
@@ -41,6 +42,7 @@ class Carpetas {
   }
 
   agregarCarpeta() {
+    debugger;
     let bError = this.validaDatosCarpeta();
     if (bError == false) {
       interceptor
@@ -131,33 +133,52 @@ class Carpetas {
     debugger;
 
     bodyFormData.append("objectJSON", JSON.stringify(this.archivo));
-    if (this.subirArchivo.length == 1) {
-      this.subirArchivo.forEach((element) => {
-        bodyFormData.append("archivo", element);
+    if(this.subirArchivo.length >0 )
+    {
+      if (this.subirArchivo.length == 1) {
+        this.subirArchivo.forEach((element) => {
+          bodyFormData.append("archivo", element);
+          interceptor
+            .post("archivos/subir", bodyFormData)
+            .then((response) => {})
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      } else {
+        this.subirArchivo.forEach((element) => {
+          console.log(element);
+          bodyFormData.append("archivos", element);
+        });
         interceptor
-          .post("archivos/subir", bodyFormData)
+          .post("archivos/subirListaArchivos", bodyFormData)
           .then((response) => {})
           .catch((err) => {
             console.log(err);
           });
-      });
-    } else {
-      this.subirArchivo.forEach((element) => {
-        console.log(element);
-        bodyFormData.append("archivos", element);
-      });
-      interceptor
-        .post("archivos/subirListaArchivos", bodyFormData)
-        .then((response) => {})
-        .catch((err) => {
-          console.log(err);
-        });
+      }
+
     }
+    else
+    {
+      alert("debe seleccionar archivo");
+    }
+    
   }
   eliminar(id) {
+    
+    alert(id);
+    
+   // interceptor.
+   // delete("archivos/eliminarArchivo",{params: {id:id}})
+   // .then(response => {})
+   // .catch((err) => { console.log(err)});
+  }
+
+  eliminarCarpeta(id) {
     debugger;
     interceptor.
-    delete("archivos/eliminarArchivo",{params: {id:id}})
+    delete("carpetas/eliminarCarpeta",{params: {id:id}})
     .then(response => {})
     .catch((err) => { console.log(err)});
   }

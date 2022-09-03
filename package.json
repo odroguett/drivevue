@@ -11,6 +11,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.5",
     "alertifyjs": "^1.13.1",
+    "archiver": "^5.3.1",
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
     "bootstrap-vue": "^2.22.0",

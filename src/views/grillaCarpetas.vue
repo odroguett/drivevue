@@ -142,24 +142,10 @@ export default defineComponent({
               <ul class="dropdown-menu" data-popper-placement="top-start" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate(0px, -39px);">
               
               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.nombre +
-              "/" +
-              row.usuario +
+              row._id +
               `">Eliminar</a></li>
-              <li><a   class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.nombre +
-              "/" +
-              row.usuario +
-              `">Compartir</a></li>
-              <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.nombre +
-              "/" +
-              row.usuario +
-              `">Descargar</a></li>
-               <li><a class="is-rows-el edit-btn quick-btn dropdown-item" data-id="` +
-              row.nombre +
-              "/" +
-              row.usuario +
+               <li><a class="is-rows-el link edit-btn  dropdown-item" data-id="` +
+              row._id +
               `">Copiar Enlace</a></li>
               </ul>
               </div>`
@@ -211,7 +197,7 @@ export default defineComponent({
       for (var i = 0; i < item.length; i++) {
         item[i].classList.add("row-highlight");
       }
-      alert("hola");
+      
     };
 
     const desSeleccionar = () => {
@@ -223,9 +209,9 @@ export default defineComponent({
     const tableLoadingFinish = (elements) => {
       table.isLoading = false;
       Array.prototype.forEach.call(elements, function (element) {
-        if (element.classList.contains("name-btn")) {
+        if (element.classList.contains("link")) {
           element.addEventListener("click", function () {
-            emitir(this.dataset.id);
+            copiarLinK(this.dataset.id);
           });
         }
         if (element.classList.contains("quick-btn")) {
@@ -241,9 +227,12 @@ export default defineComponent({
         }
       });
     };
-    const eliminarCarpeta = (oCotizacion) => {};
-    const emitir = (oCotizacion) => {
-      emit("emitBeneficiario", oCotizacion);
+    const eliminarCarpeta = (id) => {
+      oCarpeta.eliminarCarpeta(id);
+    };
+    const copiarLinK = async (id) => {
+      let urlActual = window.location;
+      await navigator.clipboard.writeText(urlActual + "carpetas/" + id);
     };
 
     return {

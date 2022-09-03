@@ -47,7 +47,7 @@
             </div>
           </nav>
         </div>
-     
+
         <div class="container">
           <hr />
           <div class="row">
@@ -56,23 +56,62 @@
               v-for="(value, key) in oCarpeta.listaArchivos"
             >
               <div class="card" style="width: 18rem">
-                <a
-                    href="#"
-                    @click="oCarpeta.eliminar(value.link)"
-                    class=""
-                    >X</a
-                  >
                 <img src="" class="card-img-top" alt="" />
+
                 <div class="card-body">
-                  <h5 class="card-title">{{ value.numero }}</h5>
-                  <p class="card-text">{{ value.descripcion }}</p>
-                  <p class="card-text">{{ value.texto }}</p>
-                  <a
-                    href="#"
-                    @click="oCarpeta.descargarArchivo(value.link)"
-                    class="btn btn-primary"
-                    >Descargar</a
-                  >
+                  <div class="row">
+                    <div class="col-md-6">Imagen Aca</div>
+                    <div class="col-md-6">
+                      <div class="btn-group dropend" style="margin-left: 20px">
+                        <button
+                          type="button"
+                          class="btn btn-secondary btn-sm dropdown-toggle"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          Acciones
+                        </button>
+                        <ul
+                          class="dropdown-menu dropdown-menu-dark"
+                          aria-labelledby="navbarDarkDropdownMenuLink"
+                        >
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="#"
+                              @click="oCarpeta.descargarArchivo(value.link)"
+                              >Descargar</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item"
+                              href="#"
+                              @click="oCarpeta.eliminar(link)"
+                              >Eliminar</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" 
+                              href="#"
+                             @click="copiarLinK(value.link)" >Copiar Enlace</a>
+                          </li>
+                          <li>
+                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#compartir" href="#">Compartir</a>
+                      
+                      
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr />
+                  <h5 class="card-title">Numero Paquete: {{ value.numero }}</h5>
+                  <p class="card-text">Descripcion: {{ value.descripcion }}</p>
+                  <p class="card-text">Texto: {{ value.texto }}</p>
+                  <br />
+                  <div class="dropdown"></div>
                 </div>
               </div>
             </div>
@@ -108,8 +147,11 @@
           />
           <br />
           <div class="form-group">
-            <input class="form-control" placeholder="Descripcion" v-model="oCarpeta.archivo.descripcion" />
-            
+            <input
+              class="form-control"
+              placeholder="Descripcion"
+              v-model="oCarpeta.archivo.descripcion"
+            />
           </div>
           <div class="form-group">
             <div class="mb-3">
@@ -126,31 +168,27 @@
             </div>
             <br />
           </div>
-             <div class="container">
-          <div class="row">
-           
+          <div class="container">
+            <div class="row">
               <div class="sm-2">
                 <input
                   class="form-control"
                   type="file"
                   ref="archivo"
-                  @change="obtenerListaArchivo()"
+                  @click="obtenerListaArchivo()"
                   multiple
                 />
               </div>
               <div clas="col-sm-3">
-              <button
-                @click="oCarpeta.subir()"
-                class="btn btn-outline-secondary"
-              >
-                Subir
-              </button>
+                <button
+                  @click="oCarpeta.subir()"
+                  class="btn btn-outline-secondary"
+                >
+                  Subir
+                </button>
+              </div>
             </div>
-            </div>
-             
-          
-        </div>
-        
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary">Aceptar</button>
@@ -158,6 +196,58 @@
       </div>
     </div>
   </div>
+  <div
+    class="modal fade"
+    id="compartir"
+    tabindex="-1"
+    aria-labelledby="compartir"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="agregarModal">Compartir</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            
+            <input
+              class="form-control"
+              placeholder="Añadir Personas"
+            />
+            <br/>
+            <input
+              class="form-control"
+              placeholder="Compartidor"
+            />
+            <br />
+            <div class="row">
+              <div class="col-sm-6">
+                <button type="button" class="btn btn-outline-secondary">Copiar enlace</button>
+              </div>
+              
+            </div>
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary"
+          >
+            Enviar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 <script>
 import { onMounted, reactive, ref } from "vue";
@@ -170,9 +260,9 @@ export default {
   setup: () => {
     let archivo = ref(null);
     let oCarpeta = reactive(new oCarpetas.Carpetas());
+    let menu = ref(null);
     const route = useRoute();
     const obtenerListaArchivo = () => {
-      debugger;
       for (let index = 0; index < archivo.value.files.length; index++) {
         oCarpeta.subirArchivo.push(archivo.value.files[index]);
       }
@@ -185,11 +275,17 @@ export default {
       oCarpeta.idCarpeta = route.params.id;
       oCarpeta.obtenerArchivos();
     });
+    const copiarLinK = async (id) => {
+      let urlActual = window.location;
+      await navigator.clipboard.writeText(urlActual + "/" +  id);
+    };
 
     return {
       oCarpeta,
       obtenerListaArchivo,
       archivo,
+      menu,
+      copiarLinK
     };
   },
 };
