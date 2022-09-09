@@ -6,6 +6,7 @@ class Carpetas {
   listaCarpetas = [];
   listaCarpetaSelect = [];
   listaArchivos = [];
+  listaUsuarios = [];
   idCarpeta;
   subirArchivo = [];
   value = "";
@@ -133,7 +134,7 @@ class Carpetas {
     debugger;
 
     bodyFormData.append("objectJSON", JSON.stringify(this.archivo));
-    if(this.subirArchivo.length >0 )
+    if(this.subirArchivo.length ==0 )
     {
       if (this.subirArchivo.length == 1) {
         this.subirArchivo.forEach((element) => {
@@ -163,24 +164,29 @@ class Carpetas {
     {
       alert("debe seleccionar archivo");
     }
-    
   }
-  eliminar(id) {
-    
-    alert(id);
-    
-   // interceptor.
-   // delete("archivos/eliminarArchivo",{params: {id:id}})
-   // .then(response => {})
-   // .catch((err) => { console.log(err)});
-  }
-
   eliminarCarpeta(id) {
     debugger;
     interceptor.
     delete("carpetas/eliminarCarpeta",{params: {id:id}})
     .then(response => {})
     .catch((err) => { console.log(err)});
+  }
+  async obtenerListaUsuarios() {
+    debugger;
+    await interceptor
+      .get("usuarios/obtenerListaUsuariosTodos")
+      .then((response) => {
+        if (response.data.esValido) {
+          this.listaUsuarios = response.data.objeto;
+          return this.listaUsuarios;
+        } else {
+          alert("sin datos");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 

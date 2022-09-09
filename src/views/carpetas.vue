@@ -92,14 +92,21 @@
                             >
                           </li>
                           <li>
-                            <a class="dropdown-item" 
+                            <a
+                              class="dropdown-item"
                               href="#"
-                             @click="copiarLinK(value.link)" >Copiar Enlace</a>
+                              @click="copiarLinK(value.link)"
+                              >Copiar Enlace</a
+                            >
                           </li>
                           <li>
-                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#compartir" href="#">Compartir</a>
-                      
-                      
+                            <a
+                              class="dropdown-item"
+                              data-bs-toggle="modal"
+                              data-bs-target="#compartir"
+                              href="#"
+                              >Compartir</a
+                            >
                           </li>
                         </ul>
                       </div>
@@ -216,51 +223,48 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            
-            <input
-              class="form-control"
-              placeholder="Añadir Personas"
+            <Multiselect
+              v-model="value"
+              mode="tags"
+              :close-on-select="false"
+              :searchable="true"
+              :create-option="true"
+              :options=oCarpeta.listaUsuarios
             />
-            <br/>
-            <input
-              class="form-control"
-              placeholder="Compartidor"
-            />
+            <br />
+          
             <br />
             <div class="row">
               <div class="col-sm-6">
-                <button type="button" class="btn btn-outline-secondary">Copiar enlace</button>
+                <button type="button" class="btn btn-outline-secondary">
+                  Copiar enlace
+                </button>
               </div>
-              
             </div>
-            
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-primary"
-          >
-            Enviar
-          </button>
+          <button type="button" class="btn btn-primary">Enviar</button>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 <script>
 import { onMounted, reactive, ref } from "vue";
 import { oCarpetas } from "../clases/carpetas";
 import { useRoute } from "vue-router";
+import Multiselect from "@vueform/multiselect";
 
 export default {
   name: "carpetas",
-  components: {},
+  components: { Multiselect },
   setup: () => {
     let archivo = ref(null);
     let oCarpeta = reactive(new oCarpetas.Carpetas());
     let menu = ref(null);
+    let value = ref(null);
+    let options = reactive(["Batman", "Robin", "Joker"]);
     const route = useRoute();
     const obtenerListaArchivo = () => {
       for (let index = 0; index < archivo.value.files.length; index++) {
@@ -271,13 +275,15 @@ export default {
     };
 
     onMounted(() => {
+      debugger;
       oCarpeta.inicializarDatos();
       oCarpeta.idCarpeta = route.params.id;
       oCarpeta.obtenerArchivos();
+      oCarpeta.obtenerListaUsuarios();
     });
     const copiarLinK = async (id) => {
       let urlActual = window.location;
-      await navigator.clipboard.writeText(urlActual + "/" +  id);
+      await navigator.clipboard.writeText(urlActual + "/" + id);
     };
 
     return {
@@ -285,8 +291,12 @@ export default {
       obtenerListaArchivo,
       archivo,
       menu,
-      copiarLinK
+      copiarLinK,
+      value,
+      options,
     };
   },
 };
 </script>
+
+<style src="@vueform/multiselect/themes/default.css"></style>
